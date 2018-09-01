@@ -1,0 +1,12 @@
+/target/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
+.idea/kotlinc.xml
+.idea/**/dynamic.xml
+*.iws
+*.iml
+out/
+.idea/workspace.xml
+/data/
+.idea

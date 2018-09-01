@@ -1,0 +1,7 @@
+{"id":"000000000000000000000100","data":{"name":"Big Data Times"},"meta":{"label":"Magazine","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000101","data":{"name":"Daily Data"},"meta":{"label":"Magazine","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000000","data":{"title":"Hadoop"},"meta":{"label":"Publication","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000001","data":{"title":"MapReduce"},"meta":{"label":"Publication","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000002","data":{"title":"Flink"},"meta":{"label":"Publication","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000003","data":{"title":"Spark"},"meta":{"label":"Publication","graphs":["000000000000000003000000"]}}
+{"id":"000000000000000000000004","data":{"title":"Apex"},"meta":{"label":"Publication","graphs":["000000000000000003000000"]}}

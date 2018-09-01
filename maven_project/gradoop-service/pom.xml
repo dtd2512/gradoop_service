@@ -1,0 +1,358 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.scads</groupId>
+    <artifactId>gradoop-service</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>gradoop-service</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainClass>de.scads.gradoop_service.server.Server</mainClass>
+        <dep.flink.version>1.3.2</dep.flink.version>
+        <dep.gradoop.version>0.3.0-SNAPSHOT</dep.gradoop.version>
+        <dep.gradoop.gretl.version>0.2.0-SNAPSHOT</dep.gradoop.gretl.version>
+        <dep.jersey.version>2.25.1</dep.jersey.version>
+        <dep.gson.version>2.8.0</dep.gson.version>
+        <rdf4j.version>2.3.0</rdf4j.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>dbleipzig</id>
+            <name>Database Group Leipzig University</name>
+            <url>https://wdiserv1.informatik.uni-leipzig.de:443/archiva/repository/dbleipzig/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>hdp</id>
+            <name>Hortonwork Release Repo</name>
+            <url>http://repo.hortonworks.com/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+
+            <!-- Maven Shade Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <!--<version>2.3</version>-->
+                <executions>
+                    <!-- Run shade goal on package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <!-- add Main-Class to manifest file -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${mainClass}</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Gradoop -->
+        <dependency>
+            <groupId>org.gradoop</groupId>
+            <artifactId>gradoop-common</artifactId>
+            <version>${dep.gradoop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jersey-json</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-server</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-client</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-guice</artifactId>
+                    <groupId>com.sun.jersey.contribs</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-core</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>hbase-server</artifactId>
+                    <groupId>org.apache.hbase</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.gradoop</groupId>
+            <artifactId>gradoop-flink</artifactId>
+            <version>${dep.gradoop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>flink-hbase_2.11</artifactId>
+                    <groupId>org.apache.flink</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.gradoop</groupId>
+            <artifactId>gradoop-examples</artifactId>
+            <version>${dep.gradoop.version}</version>
+        </dependency>
+
+        <!-- Gradoop Extensions: GRETL & FAMER -->
+      <dependency>
+            <groupId>org.gradoop</groupId>
+            <artifactId>gretl</artifactId>
+            <version>${dep.gradoop.gretl.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-cli</artifactId>
+                    <groupId>commons-cli</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-core</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-client</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>famer-graphGenerator</artifactId>
+                    <groupId>org.gradoop.famer</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${dep.jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${dep.jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${dep.jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${dep.jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${dep.jersey.version}</version>
+        </dependency>
+
+ 		<dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>${dep.jersey.version}</version>
+    </dependency>
+
+        <!-- Flink -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-java</artifactId>
+            <version>${dep.flink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jersey-core</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-cli</artifactId>
+                    <groupId>commons-cli</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_2.11</artifactId>
+            <version>${dep.flink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-cli</artifactId>
+                    <groupId>commons-cli</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-gelly_2.11</artifactId>
+            <version>${dep.flink.version}</version>
+        </dependency>
+
+
+        <!-- Others -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${dep.gson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.8.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.3.2.5.0.0-1245</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jersey-client</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jersey-core</artifactId>
+                    <groupId>com.sun.jersey</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        
+        <!-- Jira Data Source -->
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0.2</version>
+	</dependency>
+	  <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.19.3</version>
+      </dependency>
+
+
+	<dependency>
+	    <groupId>org.gradoop.famer</groupId>
+	    <artifactId>famer-linking</artifactId>
+	    <version>0.1.0-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/famer-linking-0.1.0-SNAPSHOT.jar</systemPath>
+	</dependency>
+	<dependency>
+	  	<groupId>org.gradoop.famer</groupId>
+	  	<artifactId>famer-inputConfig</artifactId>
+	  	<version>0.1.0-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/famer-inputConfig-0.1.0-SNAPSHOT.jar</systemPath>
+	</dependency>
+	<dependency>
+	  	<groupId>org.gradoop.famer</groupId>
+	  	<artifactId>famer-clustering</artifactId>
+	  	<version>0.1.0-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/famer-clustering-0.1.0-SNAPSHOT.jar</systemPath>		  	
+	</dependency>
+	<dependency>
+	  	<groupId>org.gradoop.famer</groupId>
+	  	<artifactId>famer-common</artifactId>
+	  	<version>0.1.0-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/famer-common-0.1.0-SNAPSHOT.jar</systemPath>  	
+	</dependency>
+	<dependency>
+	    <groupId>de.uni_leipzig.biggr</groupId>
+	    <artifactId>gradoop-builder</artifactId>
+	    <version>0.3.0-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/gradoop-builder-0.3.0-SNAPSHOT.jar</systemPath>
+	</dependency>
+	<dependency>
+	    <groupId>info.debatty</groupId>
+	    <artifactId>java-string-similarity</artifactId>
+	    <version>RELEASE</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/lib/java-string-similarity-1.0.1.jar</systemPath>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.eclipse.rdf4j</groupId>
+		<artifactId>rdf4j-runtime</artifactId>
+		<version>${rdf4j.version}</version>
+    </dependency>
+    </dependencies>
+</project>

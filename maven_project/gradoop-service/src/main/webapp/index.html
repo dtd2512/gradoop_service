@@ -1,0 +1,692 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Graph Analytics Service</title>
+    <link rel="icon" type="image/png" href="images/ScaDS_Logo_Angepasst_150x60.png"/>
+
+    <style type="text/css">
+        body {
+            overflow: hidden
+        }
+
+        .box {
+            display: block;
+            border: 1px solid rgb(204, 204, 204);
+            margin: 0 auto;
+            position: absolute;
+            top: 100px;
+            right: 6px;
+            left: 6px;
+            bottom: 100px;
+            padding-bottom: 20px;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 10px;
+            padding: 0px;
+        }
+
+        #navbar {
+            margin-bottom: 0;
+        }
+
+        .alert {
+            border-radius: 0;
+        }
+
+        .container {
+            width: 100%;
+            padding-right: 0;
+            padding-left: 0;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .col-xs-1, .col-sm-1, .col-md-1, .col-sm-1,
+        .col-xs-2, .col-sm-2, .col-md-2, .col-sm-2,
+        .col-xs-3, .col-sm-3, .col-md-3, .col-sm-3,
+        .col-xs-4, .col-sm-4, .col-md-4, .col-sm-4,
+        .col-xs-5, .col-sm-5, .col-md-5, .col-sm-5,
+        .col-xs-6, .col-sm-6, .col-md-6, .col-sm-6,
+        .col-xs-7, .col-sm-7, .col-md-7, .col-sm-7,
+        .col-xs-8, .col-sm-8, .col-md-8, .col-sm-8,
+        .col-xs-9, .col-sm-9, .col-md-9, .col-sm-9,
+        .col-xs-10, .col-sm-10, .col-md-10, .col-sm-10,
+        .col-xs-11, .col-sm-11, .col-md-11, .col-sm-11,
+        .col-xs-12, .col-sm-12, .col-md-12, .col-sm-12 {
+            position: relative;
+            height: 100%;
+            min-height: 1px;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .footer {
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top: none;
+        }
+
+        .panel {
+            border: none;
+        }
+
+        #exTab2 h3 {
+            color: white;
+            background-color: #428bca;
+            padding: 5px 15px;
+        }
+
+        .tools {
+            box-sizing: border-box;
+            padding: 0.25em 0.5em;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 6px;
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid #ddd;
+            z-index: 1;
+            overflow: auto;
+        }
+        #form-modal label{
+            width : 105px;
+            padding-right: 10px;
+        }
+
+        #form-sampling label{
+            width : 105px;
+            padding-right: 10px;
+        }
+
+        #form-sampling input{
+            width : 53px;
+            text-align: center;
+        }
+        #form-props label{
+            width : 105px;
+            padding-right: 10px;
+        }
+        #form-nodes-colors label{
+            width : 105px;
+            padding-right: 10px;
+        }
+        #form-edges-colors label{
+            width : 105px;
+            padding-right: 10px;
+        }
+
+        #form-props input{
+            width : 53px;
+            text-align: center;
+        }
+
+
+        
+        .viva-node-label {
+            position: absolute;
+            pointer-events: none;
+            color: black;
+            z-index: 10;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .tooltip-wrapper {
+    		position: absolute;
+    		/*transform: translate(-90%, -90%);*/
+   		 	opacity: 1;
+   	 		display: inline-block;
+    		border-bottom: 1px dotted black; 
+    		background-color: #778899;
+   			color: #fff;
+    		text-align: center;
+    		padding: 5px;
+    		border-radius: 6px;
+    		font-size: 12px;
+ 		    text-align: left;
+		}
+
+		.tooltip-wrapper.fade-out {
+   		 	opacity: 0;
+    		transition: opacity 1s ease-in-out;
+    		}
+    		
+		@media (min-width: 690px) {
+		  .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+		    float: left;
+		  }
+		  .col-lg-12 {width: 100%;}
+		  .col-lg-11 {width: 91.66666667%;}
+		  .col-lg-10 {width: 83.33333333%;}
+		  .col-lg-9 {width: 75%;}
+		  .col-lg-8 {width: 66.66666667%;}
+		  .col-lg-7 {width: 58.33333333%;}
+		  .col-lg-6 {width: 50%;}
+		  .col-lg-5 {width: 41.66666667%;}
+		  .col-lg-4 {width: 33.33333333%;}
+		  .col-lg-3 {width: 25%;}
+		  .col-lg-2 {width: 16.66666667%;}
+		  .col-lg-1 {width: 8.33333333%;}
+		  .col-lg-pull-12 {right: 100%;}
+		  .col-lg-pull-11 {right: 91.66666667%;}
+		  .col-lg-pull-10 {right: 83.33333333%;}
+		  .col-lg-pull-9 {right: 75%;}
+		  .col-lg-pull-8 {right: 66.66666667%;}
+		  .col-lg-pull-7 {right: 58.33333333%;}
+		  .col-lg-pull-6 {right: 50%;}
+		  .col-lg-pull-5 {right: 41.66666667%;}
+		  .col-lg-pull-4 {right: 33.33333333%;}
+		  .col-lg-pull-3 {right: 25%;}
+		  .col-lg-pull-2 {right: 16.66666667%;}
+		  .col-lg-pull-1 {right: 8.33333333%;}
+		  .col-lg-pull-0 {right: auto;}
+		  .col-lg-push-12 {left: 100%;}
+		  .col-lg-push-11 {left: 91.66666667%;}
+		  .col-lg-push-10 {left: 83.33333333%;}
+		  .col-lg-push-9 {left: 75%;}
+		  .col-lg-push-8 {left: 66.66666667%;}
+		  .col-lg-push-7 {left: 58.33333333%;}
+		  .col-lg-push-6 {left: 50%;}
+		  .col-lg-push-5 {left: 41.66666667%;}
+		  .col-lg-push-4 {left: 33.33333333%;}
+		  .col-lg-push-3 {left: 25%;}
+		  .col-lg-push-2 {left: 16.66666667%;}
+		  .col-lg-push-1 {left: 8.33333333%;}
+		  .col-lg-push-0 {left: auto;}
+		  .col-lg-offset-12 {margin-left: 100%;}
+		  .col-lg-offset-11 {margin-left: 91.66666667%;}
+		  .col-lg-offset-10 {margin-left: 83.33333333%;}
+		  .col-lg-offset-9 {margin-left: 75%;}
+		  .col-lg-offset-8 {margin-left: 66.66666667%;}
+		  .col-lg-offset-7 {margin-left: 58.33333333%;}
+		  .col-lg-offset-6 {margin-left: 50%;}
+		  .col-lg-offset-5 {margin-left: 41.66666667%;}
+		  .col-lg-offset-4 {margin-left: 33.33333333%;}
+		  .col-lg-offset-3 {margin-left: 25%;}
+		  .col-lg-offset-2 {margin-left: 16.66666667%;}
+		  .col-lg-offset-1 {margin-left: 8.33333333%;}
+		  .col-lg-offset-0 {margin-left: 0;}
+		}
+		
+		@media (min-width: 1250px) {	
+			#graph-analytics-service{
+				display: block;
+			}
+		}
+		@media (min-width: 0px) and (max-width: 1250px){
+			#graph-analytics-service{
+				display: none;
+			}
+		}
+  	
+        
+        
+    </style>
+    <link type="text/css" rel="stylesheet" href="css/scads.css">
+    <link href="css/jquery-editable.css" rel="stylesheet">
+    <link href="css/jquery-ui-1.10.1.custom.css" rel="stylesheet">
+    <link href="css/nprogress.css" rel="stylesheet">
+    <link rel='stylesheet' href='css/spectrum.css' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css" rel="stylesheet">
+
+    
+
+    <script type="text/javascript" src="js/jquery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/cytoscape/cytoscape.min.js"></script>
+    <script type="text/javascript" src="js/cytoscape/cytoscape-qtip.js"></script>
+    <script type="text/javascript" src="js/nprogress.js"></script>
+    <script type="text/javascript">
+        var ajaxCounter= 0;
+        $(document).ajaxStart(function(e){ ajaxCounter++; NProgress.start() });
+        $(document).ajaxStop(function(e){ ajaxCounter--; if (ajaxCounter==0) NProgress.done() });
+    </script>
+
+    <script type="text/javascript" src="js/qtip/jquery.qtip.min.js"></script>
+    <link href="js/qtip/jquery.qtip.css" rel="stylesheet">
+    
+    <script src="js/pattern_match/date.js"></script>
+	<script src="js/pattern_match/jquery-ui-1.10.1.custom.min.js"></script>
+	<script src="js/pattern_match/jquery.poshytip.js"></script>
+	<script src="js/pattern_match/jquery-editable-poshytip.js"></script>
+ 	<script src="js/pattern_match/jqueryui-editable.js"></script>
+ 	<script src="js/pattern_match/d3.v2.js"></script>
+
+    <script type="text/javascript" src="js/cytoscape/dagre.js"></script>
+    <script type="text/javascript" src="js/cytoscape/cytoscape-dagre.js"></script>
+
+    <script type="text/javascript" src="js/postJson.js"></script>
+    <script type="text/javascript" src="js/graph-drawing.js"></script>
+    <script type="text/javascript" src="js/pattern_match.js"></script>
+    <script type="text/javascript" src="js/operator.js"></script>
+    <script type="text/javascript" src="js/linking.js"></script>
+    <script type="text/javascript" src="js/service.js"></script>
+
+    <!--color picker/-->
+    <script src="js/spectrum.js"></script>
+    <script type="text/javascript" src="js/graph-colors.js"></script>
+    <!--color palette/-->
+    <script src="js/palette.js"></script>
+    <!-- viva graph-->
+    <script src="js/viva/vivagraph.js"></script>
+    <script src="js/viva/viva_action.js"></script>
+    <script src="js/viva/forVivaCirclularNode.js"></script>
+    <!-- viva graph-->
+    <script src="js/cyto_action.js"></script>
+    <!-- range slider-->
+    <!--link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/ion.rangeSlider.css" />
+    <link rel="stylesheet" href="css/ion.rangeSlider.skinHTML5.css" />
+    <script src="js/ion.rangeSlider.js"></script>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--script src="js/rangeslider.js"></script-->
+    <!--script src="js/rangeslider.min.js"></script>
+    <link href="css/rangeslider.css" rel="stylesheet"-->
+
+    <link href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/bootstrap-select.min.css">
+    <script type="text/javascript" src="js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>    
+    
+    
+	<!-- mxGraph workflow -->
+	<script type="text/javascript"  src="js/xmlToJSON.js"></script>
+	<script type="text/javascript"  src="js/workflow-editor.js"></script>
+	<script type="text/javascript" src="js/mxgraph/mxClient.min.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>    
+</head>
+
+
+<body onload="createEditor('config/diagrameditor.xml');">
+
+<header>
+    <div style="overflow: hidden;">
+        <div style="float: left;width: 150px;">
+            <a href="http://www.scads.de/">
+                <div style="width: 150px; height: 60px; margin-top: 6px;">
+                    <img src="images/ScaDS_Logo_Angepasst_150x60.png" alt="ScaDS Logo">
+                </div>
+            </a>
+        </div>
+        <div style="float: left;overflow: hidden;width: 300px">
+            <p style="color: lightgray; font-size: 120%; font-family: Verdana, Geneva, sans-serif; font-style: normal; font-variant: normal; font-weight: 300; text-shadow: none; margin-left: 30px;">
+                COMPETENCE CENTER <br>FOR SCALABLE DATA SERVICES <br>AND SOLUTIONS
+            </p>
+        </div>
+
+        <!--div style="float: left;overflow: hidden;width: 260px"><p
+                style="color: lightgray; font-size: 120%; font-family: Verdana, Geneva, sans-serif; font-style: normal; font-variant: normal; font-weight: 300; text-shadow: none; margin-left: 30px;"></p>
+        </div>
+
+        <div style="float: left;overflow: hidden;width: 60px"><p
+                style="color: lightgray; font-size: 120%; font-family: Verdana, Geneva, sans-serif; font-style: normal; font-variant: normal; font-weight: 300; text-shadow: none; margin-left: 30px;"></p>
+        </div-->
+
+        <div style="float: left; overflow: hidden; width: 160px; margin-left: 5px;">
+            <a href="http://www.gradoop.org/">
+            <div style="height: 65px; margin-top: 6px;">
+                <img height="60" src="images/gradoop.png" alt="GRADOOP" title="GRADOOP">
+            </div>
+            </a>
+        </div>
+
+        <div id="graph-analytics-service" style="float: left; overflow: hidden;">
+            <p style="font-size: 47px;">Graph Analytics Service</p>
+        </div>
+
+        <div style="float: right;overflow: hidden">
+            <a href="http://www.bmbf.de/" target="_blank">
+                <div style="height: 50px; width: 150px;">
+                    <img src="images/BMBF_logo_2.jpg" alt="Bundesministerium für Bildung und Forschung Logo"
+                         style="width:150px;float: left;">
+                </div>
+            </a>
+        </div>
+    </div>
+</header>
+
+
+<!--<article>-->
+<div class="box">
+    <div style="padding: 10px; font-size: 12px; line-height: 16px; text-align: justify; font-family: Helvetica, Arial, FreeSans, sans-serif; color: #6e6e6e; word-break: normal;">
+        <!-- CONTENT -->
+        <div class="row">
+            <div class="col-lg-3" style="height: 100%; overflow: auto;">
+               	<div id="controls" style="width:100%;background-color:#ffffff">
+               		<div id="toolbar" style="margin-top:0px"></div>
+               	</div>
+               		<div id="topWorkflowControls" style="height:40px">
+	                	<div class="btn-group" role="group" aria-label="save-load" style="float:left;margin:30px 15px auto auto">
+		                	<button type="button" class="btn" style="color:#6c6c6c;background-color:#eee">Workflow</button>	                	
+		                	<button type="button" id="displaySaveAsWorkflowConfig" class="btn btn-success" style="margin-left:0px">Save As</button>
+		                	<button type="button" id="displayLoadWorkflowConfig" class="btn btn-success" style="margin-left:0px">Load</button>
+		                	<button type="button" id="clearWorkflow" class="btn btn-success" style="margin-left:0px">Clear</button>
+		                	<button type="button" class="btn btn-success" onclick="Workflow.toggle();" style="margin-left:0px">Toggle</button>
+	                	</div>
+	               </div>
+                <div id="operatorConfig" style="margin-top:80px">
+                </div>
+            </div>
+            <div class="col-lg-7" style="padding: 0 0 0 18px; border-left: 1px solid #ccc;">
+	            <div id="workflow" style="height:35%">
+
+	                <div id="graph-editor" style="height:85%">
+	                	<div id="graph" style="height:100%;width:100%;float:left;background-color:#ffffff"></div>
+	                </div>
+	                <div id="bottomWorkflowControls" style="z-index:2;position:relative;height:15%;min-height:40px;margin-right:20px;border-bottom:1px solid #cccccc;padding-right:20px;background-color:white">
+	                	<div id="zoomActions" style="margin-right:10px;margin-top:8px;height:40px"></div>
+	                	<div id="workflowRun" style="position:absolute;left:170px;top:0px"></div>         	
+	                </div>
+	            </div>      
+	                      
+                <div id="graph-view" style="height:65%">
+                	<div id="canvas"  style="overflow:hidden; height:100%;"></div>
+	                <div id="graph-view-table" style="height: 100%; overflow-x: auto; overflow-y: scroll; display: none">
+	                    <table class="table table-condensed table-bordered table-hover" id="graph-nodes-table">
+	                        <thead id="graph-nodes-table-head">
+	                            <tr>
+	                                <th colspan="3" style="text-align: center;">Nodes</th>
+	                            </tr>
+	                            <tr>
+	                                <th>ID
+                                        <span data-types="nodes" data-field="id" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Label
+                                        <span data-types="nodes" data-field="label" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Attributes
+                                        <!--span data-types="nodes" data-field="properties" class="glyphicon glyphicon-sort order-selection">
+                                        </span--></th>
+	                            </tr>
+	                        </thead>
+	                        <tbody id="graph-nodes-table-body">
+	                            <tr><td colspan="5" style="text-align: center;">No data</td></tr>
+	                        </tbody>
+	                    </table>
+	                    <table class="table table-condensed table-bordered table-hover" id="graph-edges-table">
+	                        <thead id="graph-edges-table-head">
+	                            <tr>
+	                                <th colspan="5" style="text-align: center;">Edges</th>
+	                            </tr>
+	                            <tr>
+                                    <th>ID
+                                        <span data-types="edges" data-field="id" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Label
+                                        <span data-types="edges" data-field="label" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Source ID
+                                        <span data-types="edges" data-field="source" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Target ID
+                                        <span data-types="edges" data-field="target" class="glyphicon glyphicon-sort order-selection">
+                                        </span></th>
+	                                <th>Attributes
+                                        <!--span data-types="edges" data-field="properties" class="glyphicon glyphicon-sort order-selection">
+                                        </span--></th>
+	                            </tr>
+	                        </thead>
+	                        <tbody id="graph-edges-table-body">
+	                            <tr><td colspan="5" style="text-align: center;">No data</td></tr>
+	                        </tbody>
+	                    </table>
+	                </div>                	
+                </div>
+
+            </div>
+            <div class="col-lg-2 tools">
+            
+                <div class="input-group" id="databasesInputGroup" style="width:100%">
+                    <span class="input-group-addon" style="width:30%">Graph</span>
+                    <select id="databases" class="selectpicker" title="..." data-width="70%"></select>
+                </div>
+                <button id="graph-dl-button" type="button" class="btn btn-info" disabled="disabled">
+                    <span class="glyphicon glyphicon-cloud-download"></span> Download Graph
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#upload">
+                	<span class="glyphicon glyphicon-cloud-upload"></span> Upload Graph
+                </button>
+                
+
+
+                <br><br>
+
+                <!--<div class="row">-->
+                    <!--<div class="col-lg-9">-->
+<!--                         <div class="input-group">
+                            <span class="input-group-addon">Operation</span>
+                            <select id="operations" class="selectpicker" title="..."
+                                    onchange="showOperatorConfig(this.value);">
+                                <optgroup label="Unary Graph Operations">
+                                    <option value="filter">Filtering</option>
+                                    <option value="group">Grouping</option>
+                                    <option value="pattern">Pattern Matching</option>
+                                    <option value="cypher">Cypher</option>
+                                    <option value="clustering">Clustering</option>
+                                    <option value="sampling">Sampling</option>
+                                </optgroup>
+                                <optgroup label="Binary Graph Operations">
+                                    <option value="combination">Combination</option>
+                                    <option value="overlap">Overlap</option>
+                                    <option value="exclusion">Exclusion</option>
+                                </optgroup>
+                                <optgroup label="Convenience">
+                                    <option value="schema">Schema Graph</option>
+                                    <option value="expand">Expand Graph</option>
+                                </optgroup>
+                                <optgroup label="Graph Algorithms">
+                                    <option value="cc">Weakly Connected Components</option>
+                                    <option value="pr">PageRank</option>
+                                </optgroup>
+                            </select>
+                        </div> -->
+                    <!--</div>-->
+                    <!--<div class="col-lg-3">-->
+                    <br>
+                    <div>
+                    	<!-- <button type="button" class="btn btn-success" onclick="Workflow.toggle();">Workflow toggle</button> -->
+<!--                         <button type="button" class="btn btn-success" onclick="executeOperator();">Calculate</button> -->
+                    </div>
+                <!--</div>-->
+            
+                <h4>Drawing Properties</h4><br/>
+                <div style="...">
+                    <form id= "form-sampling" class = "form-inline form-horizontal">
+                        <div class = "form-group ">
+                            <label class = "control-label" for ="samplings">Sampling: </label>
+                            <select id="samplings" class="selectpicker form-control" data-width = 180px>
+                                <option>No Sampling</option>
+                                <option>Node Sampling</option>
+                                <option>Edge Sampling</option>
+                                <option>PageRank Sampling</option>
+                            </select>
+                        </div><br>
+                        <div class = "form-group ">
+                            <label class = "control-label"  for = "sampling_threshold">Threshold: </label>
+                            <input id="sampling_threshold" value="0.2" class="selectpicker form-control">
+                        </div><br>
+                    </form>
+                </div>
+                <button onclick="loadgraph()" class="btn btn-success">Draw</button>
+                <button id = "switch-draw" onclick="switchDrawing()" class="btn btn-success">VivaGraph</button>
+                <button id="switch-view-btn" type="button" class="btn btn-secondary"
+                        onclick="switchGraphView();" disabled>View as table</button>
+                <hr>
+                <div  style="...">
+                    <form id= "form-props" class = "form-inline form-horizontal">
+                        <div class = "form-group ">
+                                <label class = "control-label" for ="vertex_size">Vertex Size: </label>
+                                <input id="vertex_size" type="text" data-slider-min="1" data-slider-max="150" data-slider-step="1" data-slider-value="60" style="width:160px"/>
+                        </div><br>
+
+                        <div class = "form-group ">
+                            <label class = "control-label"  for = "edge_opacity">Edge Opacity: </label>
+                            <input id="edge_opacity" type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.1" data-slider-value="1" style="width:160px"/>
+                            <!--input id="edge_opacity" value="1" class="selectpicker form-control"-->
+                        </div><br>
+                        <div class = "form-group ">
+                            <label class = "control-label"  for = "label_size">Font Size: </label>
+                            <input id="label_size" type="text" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="10" style="width:160px"/>
+                            <!--input id="edge_opacity" value="1" class="selectpicker form-control"-->
+                        </div><br>
+                    </form>
+
+                    <!--input type="checkbox" name="" id="show-v-label"> Show vertex labels<br/>
+                    <input type="checkbox" name="" id="show-e-label" checked> Show edge labels<br/>
+                    <input type="checkbox" name="" id="scale-vertices"> Scale Vertices<br/>
+                    <input type="checkbox" name="" id="scale-edges"> Scale Edges<-->
+                </div>
+
+                <!--div>
+                    <!--button onclick="updateDrawing()" class="btn btn-success">Update</button>
+
+                </div-->
+                <div id = "drawing_properties" style="...">
+                </div>
+                <hr>
+                <h4>Color Chooser</h4><br/>
+                <div id="loadColors"></div>
+                <p><div id="coloredlabels" title="..." style = "...">
+                 </div></p>
+                <p><div id="edge-color-selecter" style = "...">
+                </div></p>
+                <p><div id="save-color-div" style = "...">
+            </div></p>
+            </div>
+            <!-- Modal -->
+            <div id="myModal"  class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Color Mapping</h4>
+                        </div>
+                        <div class="modal-body">
+                            <!--div class="container"-->
+                            <form id = form-modal class = "form-inline form-horizontal">
+                                <div class="container-fluid">
+                                    <div class="row" >
+                                        <div id = modal_node_colors class="col-md-6" style ="height : auto">
+                                            <h5>Nodes:</h5>
+                                        </div>
+                                        <div id = modal_edge_colors class="col-md-6" style ="height : auto">
+                                            <h5>Edges:</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!--p>Do you want to save changes you made to document before closing?</p>
+                            <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p-->
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick = updateGraph() type="button" class="btn btn-success" data-dismiss="modal">Draw</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div style="position: absolute; right: -2px; top: -1px; width: 40px; height: 40px; border-style: solid; border-width: 3px 3px 0px 0px;">
+        &nbsp;</div>
+    <div style="position: absolute; left: 0px; bottom: -1px; width: 40px; height: 40px; border-style: solid; border-width: 0px 0px 3px 3px;">
+        &nbsp;</div>
+</div>
+
+
+
+<!--</article>-->
+
+
+<div style="position: absolute; bottom: 0; width: 100%;">
+    <table style="height: 91px; width: 1000px; margin-left: auto; margin-right: auto;">
+        <tbody>
+        <tr sytle="display: table-row; vertical-align: inherit;">
+            <td><a href="https://tu-dresden.de/"><img class="pull-left"
+                                                      style="float: left; display: block; margin-left: auto; margin-right: auto;"
+                                                      src="images/TU_Logo_HKS41_57_verysmall.png" alt="" height="49"
+                                                      width="167"></a></td>
+            <td><a href="http://www.uni-leipzig.de/" target="_blank"><img
+                    style="float: left; isplay: block; margin-left: auto; margin-right: auto;"
+                    src="images/logo-uni-leipzig.png" alt=""></a></td>
+            <td><a href="http://www.mpi-cbg.de/" target="_blank"><img class="pull-left"
+                                                                      style="float: left; display: block; margin-left: auto; margin-right: auto;"
+                                                                      src="images/Mpicbg_Logo.png" alt="" height="85"
+                                                                      width="85"></a></td>
+            <td>&nbsp;<a href="https://www.ioer.de/info/home/"><img class="pull-left"
+                                                                    style="float: left; display: block; margin-left: auto; margin-right: auto;"
+                                                                    src="images/ioer_log.gif" alt="" height="87"
+                                                                    width="190"></a></td>
+            <td><p class="pull-left" style="color: grey; display: block;">Förderkennzeichen: 01is14014</p></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- OPTIONAL: include this if you want history support -->
+<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+
+<!-- <div id="loadingWrapper">
+    <div id="loading">
+        <div class="loadingIndicator">
+            <img src="images/Dedoop_logo.jpg" style="margin-right:8px;float:left;vertical-align:top;"/>
+            <br/>
+            <span id="loadingMsg">Loading Dedoop...</span>
+        </div>
+    </div>
+</div> -->
+
+
+<noscript>
+    <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled in order for this application to display correctly.
+    </div>
+</noscript>
+
+                <div id="upload" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Graph Upload</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group" style="width:100%"><span class="input-group-addon" id="uploaddbdescritor" style="width:11em">Output Graph</span><input id="uploadIdentifier" class="form-control" placeholder="type here..." aria-describedby="uploaddbdescritor"></div>
+                                <hr />
+                                <form id="uploadformgraphs">
+                                    <div class="input-group" style="width:100%"><span class="input-group-addon" style="width:11em" >Graphs file/folder</span><input type="file" multiple="multiple" allowdirs name="file" class="form-control"></div>
+                                </form>
+                                <form id="uploadformvertices">
+                                    <div class="input-group" style="width:100%"><span class="input-group-addon" style="width:11em">Vertices file/folder</span><input type="file" multiple="multiple" name="file" class="form-control"></div>
+                                </form>
+                                <form id="uploadformedges">
+                                    <div class="input-group" style="width:100%"><span class="input-group-addon" style="width:11em">Edges file/folder</span><input type="file" multiple="multiple" name="file" class="form-control"></div>
+                                </form>
+                                <button id="confirmupload" class="btn btn-success btn-lg">Start Upload!</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+</body>
+</html>
